@@ -2,7 +2,7 @@ import Link from 'next/link'
 import React from 'react'
 import Menu from './Menu'
 import { SearchBox } from './SearchBox'
-
+ 
 const Header = () => {
   return (
     <header>
@@ -25,7 +25,7 @@ const Header = () => {
               </svg>
             </label>
             <Link href="/" className="btn btn-ghost text-lg">
-              Next Amazona V2
+              E-Commerce
             </Link>
           </div>
 
