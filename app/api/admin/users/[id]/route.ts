@@ -1,6 +1,6 @@
 import { auth } from '@/lib/auth'
 import dbConnect from '@/lib/dbconnect'
-import ProductModel from '@/lib/models/ProductModel'
+import UserModel from '@/lib/models/UserModel'
 
 export const GET = auth(async (...args: any) => {
   const [req, { params }] = args
@@ -13,20 +13,20 @@ export const GET = auth(async (...args: any) => {
     )
   }
   await dbConnect()
-  const product = await ProductModel.findById(params.id)
-  if (!product) {
+  const user = await UserModel.findById(params.id)
+  if (!user) {
     return Response.json(
-      { message: 'product not found' },
+      { message: 'user not found' },
       {
         status: 404,
       }
     )
   }
-  return Response.json(product)
+  return Response.json(user)
 }) as any
 
-export const PUT = auth(async (...args: any) => {
-  const [req, { params }] = args
+export const PUT = auth(async (...p: any) => {
+  const [req, { params }] = p
   if (!req.auth || !req.auth.user?.isAdmin) {
     return Response.json(
       { message: 'unauthorized' },
@@ -36,36 +36,24 @@ export const PUT = auth(async (...args: any) => {
     )
   }
 
-  const {
-    name,
-    slug,
-    price,
-    category,
-    image,
-    brand,
-    countInStock,
-    description,
-  } = await req.json()
+  const { name, email, isAdmin } = await req.json()
 
   try {
     await dbConnect()
+    const user = await UserModel.findById(params.id)
+    if (user) {
+      user.name = name
+      user.email = email
+      user.isAdmin = Boolean(isAdmin)
 
-    const product = await ProductModel.findById(params.id)
-    if (product) {
-      product.name = name
-      product.slug = slug
-      product.price = price
-      product.category = category
-      product.image = image
-      product.brand = brand
-      product.countInStock = countInStock
-      product.description = description
-
-      const updatedProduct = await product.save()
-      return Response.json(updatedProduct)
+      const updatedUser = await user.save()
+      return Response.json({
+        message: 'User updated successfully',
+        user: updatedUser,
+      })
     } else {
       return Response.json(
-        { message: 'Product not found' },
+        { message: 'User not found' },
         {
           status: 404,
         }
@@ -83,7 +71,6 @@ export const PUT = auth(async (...args: any) => {
 
 export const DELETE = auth(async (...args: any) => {
   const [req, { params }] = args
-
   if (!req.auth || !req.auth.user?.isAdmin) {
     return Response.json(
       { message: 'unauthorized' },
@@ -95,13 +82,20 @@ export const DELETE = auth(async (...args: any) => {
 
   try {
     await dbConnect()
-    const product = await ProductModel.findById(params.id)
-    if (product) {
-      await product.deleteOne()
-      return Response.json({ message: 'Product deleted successfully' })
+    const user = await UserModel.findById(params.id)
+    if (user) {
+      if (user.isAdmin)
+        return Response.json(
+          { message: 'User is admin' },
+          {
+            status: 400,
+          }
+        )
+      await user.deleteOne()
+      return Response.json({ message: 'User deleted successfully' })
     } else {
       return Response.json(
-        { message: 'Product not found' },
+        { message: 'User not found' },
         {
           status: 404,
         }

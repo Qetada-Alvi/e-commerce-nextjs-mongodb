@@ -1,12 +1,12 @@
 'use client'
-import CheckoutSteps from '@/components/CheckOutSteps'
-import useCartService from '@/lib/hooks/useCartStore'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import useCartService from '@/lib/hooks/useCartStore'
+import CheckoutSteps from '@/components/CheckOutSteps'
+import Link from 'next/link'
+import Image from 'next/image'
 import toast from 'react-hot-toast'
 import useSWRMutation from 'swr/mutation'
-import Image from 'next/image'
 
 const Form = () => {
   const router = useRouter()
@@ -40,6 +40,7 @@ const Form = () => {
         }),
       })
       const data = await res.json()
+
       if (res.ok) {
         clear()
         toast.success('Order placed successfully')
@@ -49,6 +50,7 @@ const Form = () => {
       }
     }
   )
+
   useEffect(() => {
     if (!paymentMethod) {
       return router.push('/payment')
@@ -87,7 +89,6 @@ const Form = () => {
               </div>
             </div>
           </div>
-
           <div className="card bg-base-300 mt-4">
             <div className="card-body">
               <h2 className="card-title">Payment Method</h2>
@@ -99,11 +100,10 @@ const Form = () => {
               </div>
             </div>
           </div>
-
           <div className="card bg-base-300 mt-4">
             <div className="card-body">
               <h2 className="card-title">Items</h2>
-              <table className="table">
+              <table className="table ">
                 <thead>
                   <tr>
                     <th>Item</th>
@@ -146,7 +146,6 @@ const Form = () => {
             </div>
           </div>
         </div>
-
         <div>
           <div className="card bg-base-300">
             <div className="card-body">
@@ -197,4 +196,5 @@ const Form = () => {
     </div>
   )
 }
+
 export default Form
