@@ -9,8 +9,8 @@ import Header from '@/components/header/header'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'E-Commerce',
-  description: 'Modern ECommerce Website',
+  title: 'PakTraditions',
+  description: 'E-Commerce Store',
 }
 
 export default function RootLayout({
